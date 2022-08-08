@@ -3,7 +3,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const pages = ['index', 'example', 'a', 'b'];
+const pages = ['index', 'a', 'b'];
 
 module.exports = {
 	entry: {
