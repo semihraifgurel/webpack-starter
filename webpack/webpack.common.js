@@ -6,9 +6,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const pages = ['index', 'a', 'b'];
 
 module.exports = {
-	entry: {
-		app: Path.resolve(__dirname, '../src/scripts/index.js'),
-	},
+	// entry: {
+	// 	app: Path.resolve(__dirname, '../src/scripts/index.js'),
+	// },
+	entry: pages.reduce((config, page) => {
+		config[page] = Path.resolve(__dirname,`../src/scripts/${page}.js`);
+		return config;
+	}, {}),
 	output: {
 		path: Path.join(__dirname, '../build'),
 		filename: 'js/[name].js',
@@ -24,11 +28,22 @@ module.exports = {
 		new CopyWebpackPlugin({
 			patterns: [{ from: Path.resolve(__dirname, '../public'), to: 'public' }],
 		}),
-		new HtmlWebpackPlugin({
-			template: Path.resolve(__dirname, '../src/index.html'),
-			inject: 'body',
-		}),
-	],
+		// new HtmlWebpackPlugin({
+		// 	template: Path.resolve(__dirname, '../src/index.html'),
+		// 	inject: 'body',
+		// }),
+	].concat(
+		pages.map(
+			(page) =>
+				new HtmlWebpackPlugin({
+					inject: 'body',
+					// template: `./${page}.html`,
+					template: Path.resolve(__dirname, `../src/${page}.html`),
+					filename: `${page}.html`,
+					chunks: [page],
+				})
+		)
+	),
 	resolve: {
 		alias: {
 			'~': Path.resolve(__dirname, '../src'),
