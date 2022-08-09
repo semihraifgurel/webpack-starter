@@ -3,16 +3,17 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const pages = [ 'a', 'b'];
-const pagesEntry= pages.reduce((config, page) => {
-	config[page] = Path.resolve(__dirname,`../src/scripts/${page}.js`);
+const pages = ['index', 'a', 'b'];
+const pagesWithoutIndex = pages.filter((key) => key !== 'index');
+const pagesEntry = pages.reduce((config, page) => {
+	config[page] = Path.resolve(__dirname, `../src/scripts/${page}.js`);
 	return config;
 }, {});
 
 module.exports = {
 	entry: {
-		index: Path.resolve(__dirname, '../src/scripts/index.js'),
-		...pagesEntry
+		core: Path.resolve(__dirname, '../src/scripts/core.js'),
+		...pagesEntry,
 	},
 	output: {
 		path: Path.join(__dirname, '../build'),
@@ -32,18 +33,18 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			template: Path.resolve(__dirname, '../src/index.html'),
 			inject: 'body',
-			excludeChunks: [...pages]
+			excludeChunks: [...pagesWithoutIndex],
 		}),
 	].concat(
-		pages.map(
+		pagesWithoutIndex.map(
 			(page) =>
 				new HtmlWebpackPlugin({
 					template: Path.resolve(__dirname, `../src/${page}.html`),
 					inject: 'body',
 					filename: `${page}.html`,
-					chunks: ['index', page],
-				})
-		)
+					chunks: ['core', page],
+				}),
+		),
 	),
 	resolve: {
 		alias: {
