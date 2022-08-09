@@ -6,7 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const pages = ['index', 'a', 'b'];
 const pagesWithoutIndex = pages.filter((key) => key !== 'index');
 const pagesEntry = pages.reduce((config, page) => {
-	config[page] = Path.resolve(__dirname, `../src/scripts/${page}.js`);
+	config[page] = Path.resolve(__dirname, `../src/scripts/pages/${page}.js`);
 	return config;
 }, {});
 
@@ -34,12 +34,13 @@ module.exports = {
 			template: Path.resolve(__dirname, '../src/index.html'),
 			inject: 'body',
 			excludeChunks: [...pagesWithoutIndex],
+			favicon: Path.resolve(__dirname, '../src/favicon.ico'),
 		}),
 	].concat(
 		pagesWithoutIndex.map(
 			(page) =>
 				new HtmlWebpackPlugin({
-					template: Path.resolve(__dirname, `../src/${page}.html`),
+					template: Path.resolve(__dirname, `../src/pages/${page}.html`),
 					inject: 'body',
 					filename: `${page}.html`,
 					chunks: ['core', page],
